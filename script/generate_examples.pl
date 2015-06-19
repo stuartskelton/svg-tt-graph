@@ -10,6 +10,7 @@ use SVG::TT::Graph::Bar;
 use SVG::TT::Graph::BarHorizontal;
 use SVG::TT::Graph::Line;
 use SVG::TT::Graph::Pie;
+use SVG::TT::Graph::XY;
 
 ############ Create example directory
 
@@ -24,12 +25,16 @@ my @data_02 = qw(12 23435 21 3445 345632);
 my @fields2 = ('Oct 02','Nov 02','Dec 02','Jan 03','Feb 03','Mar 03','Apr 03','May 03','Jun 03','Jul 03','Aug 03','Sep 03');
 my @data_03 = qw(0 0 0 0 0 0 0 0 0 0 1815 0);
 
+
+my @data_04 = qw(1 3 6 3 5 7 9 0 6 4 3 5 6 7 9 0 5 12);
+
 ############ Generate some bar graphs
 
 run_bar('Bar',\@fields1,\@data_01,'small_range');
 run_bar('BarHorizontal',\@fields1,\@data_02,'large_range');
 run_line('Line',\@fields2,\@data_03,'default');
 run_pie('Pie',\@fields1,\@data_02,'default');
+run_xy('XY',\@data_04,'default');
 
 sub run_line {
 	my $type = shift;
@@ -139,6 +144,26 @@ sub run_pie {
 	
 }
 
+sub run_xy {
+	my $type = shift;
+	my $data = shift;
+	my $title = shift;
 
+	my $module = "SVG::TT::Graph::$type";
+
+	## Basic using default config
+	my $graph1 = $module->new({
+		 # 'fields' => $fields,
+	});
+	$graph1->add_data({
+		'data' => $data,
+		'title' => 'Sales 2002 asdfasdfds',
+	});
+
+	my $outfile1 = "$dir/$type" . "_defaults_" . "$title.svg";
+	open(FH,">$outfile1");
+	print FH $graph1->burn();
+	close(FH);
+}
 
 
